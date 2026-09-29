@@ -19,7 +19,7 @@ def main():
     @st.cache_data(persist=True)
     def load_data():
         data = pd.read_csv(
-            "D:\\Courses\\Projects\\streamlit-ml\\mushrooms.csv")
+            "mushrooms.csv")
         labelencoder = LabelEncoder()
         for col in data.columns:
             data[col] = labelencoder.fit_transform(data[col])
@@ -36,19 +36,20 @@ def main():
     def plot_metrics(metrics_list):
         if 'Confusion Matrix' in metrics_list:
             st.subheader("Confusion Matrix")
-            ConfusionMatrixDisplay.from_estimator(
+            display = ConfusionMatrixDisplay.from_estimator(
                 model, x_test, y_test, display_labels=class_names)
-            st.pyplot()
+            st.pyplot(display.figure_)
 
         if 'ROC Curve' in metrics_list:
             st.subheader("ROC Curve")
-            RocCurveDisplay.from_estimator(model, x_test, y_test)
-            st.pyplot()
+            display = RocCurveDisplay.from_estimator(model, x_test, y_test)
+            st.pyplot(display.figure_)
 
         if 'Precision-Recall Curve' in metrics_list:
             st.subheader('Precision-Recall Curve')
-            PrecisionRecallDisplay.from_estimator(model, x_test, y_test)
-            st.pyplot()
+            display = PrecisionRecallDisplay.from_estimator(
+                model, x_test, y_test)
+            st.pyplot(display.figure_)
 
     df = load_data()
     class_names = ['edible', 'poisonous']
@@ -77,11 +78,11 @@ def main():
             model.fit(x_train, y_train)
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
-            st.write("Accuracy: ", accuracy.round(2))
-            st.write("Precision: ", precision_score(
-                y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(
-                y_test, y_pred, labels=class_names).round(2))
+            st.write(f"Accuracy: {accuracy:.2f}")
+            st.write(
+                f"Precision: {precision_score(y_test, y_pred, labels=class_names):.2f}")
+            st.write(
+                f"Recall: {recall_score(y_test, y_pred, labels=class_names):.2f}")
             plot_metrics(metrics)
 
     if classifier == 'Logistic Regression':
@@ -100,11 +101,11 @@ def main():
             model.fit(x_train, y_train)
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
-            st.write("Accuracy: ", accuracy.round(2))
-            st.write("Precision: ", precision_score(
-                y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(
-                y_test, y_pred, labels=class_names).round(2))
+            st.write(f"Accuracy: {accuracy:.2f}")
+            st.write(
+                f"Precision: {precision_score(y_test, y_pred, labels=class_names):.2f}")
+            st.write(
+                f"Recall: {recall_score(y_test, y_pred, labels=class_names):.2f}")
             plot_metrics(metrics)
 
     if classifier == 'Random Forest':
@@ -125,11 +126,11 @@ def main():
             model.fit(x_train, y_train)
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
-            st.write("Accuracy: ", accuracy.round(2))
-            st.write("Precision: ", precision_score(
-                y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(
-                y_test, y_pred, labels=class_names).round(2))
+            st.write(f"Accuracy: {accuracy:.2f}")
+            st.write(
+                f"Precision: {precision_score(y_test, y_pred, labels=class_names):.2f}")
+            st.write(
+                f"Recall: {recall_score(y_test, y_pred, labels=class_names):.2f}")
             plot_metrics(metrics)
 
     if st.sidebar.checkbox("Show raw data", False):
